@@ -1,36 +1,28 @@
-﻿using BlazingShop.Shared;
+﻿using BlazingShop.Server.Data;
+using BlazingShop.Shared;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazingShop.Server.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {
-        public List<Category> Categories { get; set; } = new List<Category>
+        private readonly DataContext _context;
+
+        public CategoryService(DataContext context)
         {
-            new Category {
-                Id = 1,
-                Name = "Arena Of Valor",
-                Url = "aov",
-                Icon = "book"
-            },
-            new Category {
-                Id = 2,
-                Name = "Leagua Of Legends",
-                Url = "lol",
-                Icon = "aperture"
-            }
-        };
+            _context = context;
+        }
 
         public async Task<List<Category>> GetCategories()
         {
-            return Categories;
+            return await _context.Categories.ToListAsync();
         }
 
         public async Task<Category> GetCategoryByUrl(string categoryUrl)
         {
-            return Categories.FirstOrDefault(c => c.Url.ToLower().Equals(categoryUrl.ToLower()));
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Url.ToLower().Equals(categoryUrl.ToLower()));
         }
     }
 }
